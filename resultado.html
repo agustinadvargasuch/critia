@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Resultado del análisis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">CRIT<em>IA</em></a>
+      <span class="header-tagline">Crítica técnica de diseño</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- Imagen del diseño -->
+      <div class="resultado-header">
+        <img id="resultadoImg" class="resultado-image" src="" alt="Tu diseño analizado">
+        <p id="resultadoMeta" style="font-size:12px; color:var(--fg-muted); margin-top:0.5rem;"></p>
+      </div>
+
+      <!-- Pregunta reflexiva (Modo aprendizaje) -->
+      <div class="pregunta-box" id="preguntaBox">
+        <div class="pregunta-label">Antes de ver el análisis</div>
+        <p class="pregunta-text" id="preguntaText">
+          ¿Cuál es el primer elemento visual que llama la atención en tu diseño? ¿Es el que debería tener prioridad según tu objetivo?
+        </p>
+        <textarea
+          id="respuestaInput"
+          class="pregunta-input"
+          rows="3"
+          placeholder="Escribí tu reflexión acá… (no hay respuesta correcta o incorrecta)"
+        ></textarea>
+        <button class="btn-ver-analisis" id="btnVerAnalisis">
+          Ver análisis completo →
+        </button>
+      </div>
+
+      <!-- Dimensiones (ocultas hasta que el usuario responda) -->
+      <div class="dimensiones-section" id="dimensionesSection">
+        <h2 class="dimensiones-title">Análisis técnico</h2>
+        <div id="dimensionesContainer">
+          <!-- Generado dinámicamente por resultado.js -->
+        </div>
+
+        <!-- Botón para analizar otro diseño -->
+        <button class="btn-secondary" onclick="window.location.href='analizar.html'">
+          Analizar otro diseño
+        </button>
+      </div>
+
+      <!-- Error (si sessionStorage está vacío) -->
+      <div class="error-msg" id="errorMsg" style="margin-top:2rem;"></div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>CRITIA · Crítica técnica de diseño</span>
+      <span>Diseño Multiplataforma · Universidad Champagnat</span>
+    </div>
+  </footer>
+
+  <script src="resultado.js"></script>
+</body>
+</html>

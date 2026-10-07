@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Crítica técnica de diseño</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">CRIT<em>IA</em></a>
+      <span class="header-tagline">Crítica técnica de diseño</span>
+    </div>
+  </header>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Analizando tu diseño…</div>
+    <div class="loading-steps" id="loadingStep">Evaluando jerarquía visual</div>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <div class="container">
+
+      <h1 class="page-title">Subí tu<br><em style="font-style:italic; font-family:'DM Serif Display',Georgia,serif;">diseño.</em></h1>
+      <p class="page-subtitle">Recibís una crítica técnica estructurada basada en principios de diseño gráfico.</p>
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="image/*" aria-label="Subir imagen de diseño">
+        <span class="upload-icon">↑</span>
+        <div class="upload-text">Arrastrá tu diseño acá o hacé clic para elegirlo</div>
+        <div class="upload-hint">JPG, PNG, PDF — máximo 10 MB</div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-msg" id="errorMsg"></div>
+
+      <!-- Form (oculto hasta que haya imagen) -->
+      <form id="mainForm" style="display:none;">
+
+        <!-- Tipo de proyecto -->
+        <div class="form-section">
+          <label class="form-label">Tipo de proyecto</label>
+          <div class="tipo-grid">
+            <button type="button" class="tipo-btn" data-tipo="Póster / Afiche">
+              <span class="tipo-icon">🖼</span>Póster
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Logotipo / Marca">
+              <span class="tipo-icon">◈</span>Logo
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Diseño editorial (libro, revista)">
+              <span class="tipo-icon">📖</span>Editorial
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Packaging / Envase">
+              <span class="tipo-icon">📦</span>Packaging
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Interfaz web o app">
+              <span class="tipo-icon">🖥</span>Web / App
+            </button>
+            <button type="button" class="tipo-btn" data-tipo="Otro">
+              <span class="tipo-icon">+</span>Otro
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Contexto -->
+        <div class="form-section">
+          <label class="form-label">Contexto del proyecto</label>
+          <p style="font-size:13px; color:var(--fg-muted); margin-bottom:1rem;">
+            Sin contexto, CRITIA solo ve la estética. Con contexto, evalúa si el diseño <em>comunica lo que tiene que comunicar</em>.
+          </p>
+
+          <div class="form-group">
+            <label for="objetivo">¿Cuál es el objetivo de esta pieza?</label>
+            <input
+              type="text"
+              id="objetivo"
+              class="form-input"
+              placeholder="Ej: Promocionar una exposición de arte contemporáneo"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="audiencia">¿A quién va dirigida?</label>
+            <input
+              type="text"
+              id="audiencia"
+              class="form-input"
+              placeholder="Ej: Estudiantes universitarios de arte, 18–30 años"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="mensaje">¿Qué mensaje o sensación principal debería transmitir?</label>
+            <textarea
+              id="mensaje"
+              class="form-textarea"
+              rows="2"
+              placeholder="Ej: Minimalismo contemporáneo, exclusividad accesible, cultura urbana"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary" id="submitBtn" disabled>
+          <span>Analizar diseño</span>
+          <span>→</span>
+        </button>
+
+      </form>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>CRITIA · Crítica técnica de diseño</span>
+      <span>Diseño Multiplataforma · Universidad Champagnat</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

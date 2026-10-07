@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Tu primera crítica técnica, antes de la entrega</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0d0d0d;
+      --white: #ffffff;
+      --orange: #f04e14;
+      --gray-mid: #888;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--orange);
+      font-size: 26px;
+      line-height: 1;
+      vertical-align: -3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--black);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover { opacity: 0.6; }
+
+    .nav-cta {
+      background: var(--gray-light);
+      color: var(--black);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+
+    .hero-logo {
+      font-size: clamp(80px, 14vw, 160px);
+      font-weight: 900;
+      letter-spacing: -4px;
+      line-height: 0.9;
+      color: var(--black);
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .hero-logo .dot {
+      width: clamp(18px, 3vw, 36px);
+      height: clamp(18px, 3vw, 36px);
+      background: var(--orange);
+      border-radius: 50%;
+      margin-top: clamp(14px, 2.5vw, 28px);
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 400;
+      color: var(--black);
+      margin-top: 24px;
+      max-width: 540px;
+      line-height: 1.4;
+      font-family: Georgia, serif;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-fill {
+      background: var(--black);
+      color: var(--white);
+      border: 2px solid var(--black);
+      padding: 18px 36px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .btn-fill:hover { opacity: 0.8; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--black);
+      border: 2px solid var(--black);
+      padding: 18px 36px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-outline:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* ---- FEATURES ---- */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--gray-light);
+      margin: 20px 0 0;
+    }
+
+    .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 52px 40px;
+      border-right: 1px solid var(--gray-light);
+    }
+
+    .feature:last-child { border-right: none; }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--gray-mid);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--gray-mid);
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 700px) {
+      nav { padding: 16px 20px; }
+      .nav-links { gap: 16px; }
+      .features { grid-template-columns: 1fr; }
+      .feature { border-right: none; border-bottom: 1px solid var(--gray-light); padding: 36px 24px; }
+      .feature:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navegación -->
+  <nav>
+    <a href="index.html" class="nav-logo">CRITIA<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#metodo">Método</a></li>
+      <li><a href="#ejemplos">Ejemplos</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><button class="nav-cta" onclick="window.location='analizar.html'">Empezar</button></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-logo">
+      CRITIA<div class="dot"></div>
+    </div>
+    <p class="hero-subtitle">Tu primera crítica técnica, antes de la entrega</p>
+    <div class="hero-btns">
+      <a href="analizar.html" class="btn-fill">Analizar mi diseño</a>
+      <a href="#ejemplos" class="btn-outline">Ver ejemplo de crítica</a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="metodo">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div class="feature-title">Subí tu pieza</div>
+      <p class="feature-desc">PNG, JPG o PDF. Un logo, un afiche, una pantalla, lo que quieras revisar.</p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24">
+          <line x1="8" y1="6" x2="21" y2="6"/>
+          <line x1="8" y1="12" x2="21" y2="12"/>
+          <line x1="8" y1="18" x2="21" y2="18"/>
+          <circle cx="3" cy="6" r="1" fill="#888" stroke="none"/>
+          <circle cx="3" cy="12" r="1" fill="#888" stroke="none"/>
+          <circle cx="3" cy="18" r="1" fill="#888" stroke="none"/>
+        </svg>
+      </div>
+      <div class="feature-title">Definí el contexto</div>
+      <p class="feature-desc">Objetivo, público y concepto en tres campos. Cuanto más precisos, mejor la crítica.</p>
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <div class="feature-title">Recibí tu crítica</div>
+      <p class="feature-desc">Seis dimensiones profesionales, cada una con qué funciona, qué no y por qué.</p>
+    </div>
+  </section>
+
+</body>
+</html>
