@@ -35,8 +35,8 @@
     /* ================= LAYOUT ================= */
     .shell {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(360px, 512px);
-      grid-template-rows: 105px 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+      grid-template-rows: 80px 1fr;
       min-height: 100vh;
     }
 
@@ -46,13 +46,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 60px;
+      padding: 0 48px;
     }
 
     .logo {
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: 32px;
+      font-size: 26px;
       letter-spacing: -1px;
       color: var(--black);
       text-decoration: none;
@@ -63,8 +63,8 @@
 
     .logo::after {
       content: '';
-      width: 12px;
-      height: 12px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: var(--orange);
     }
@@ -72,37 +72,37 @@
     .progress, .progress-dots {
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 20px;
     }
 
     .progress-dot {
-      width: 22px;
-      height: 22px;
-      border-radius: 11px;
+      width: 16px;
+      height: 16px;
+      border-radius: 8px;
       background: var(--gray-200);
       transition: width .3s ease, background .3s ease;
     }
 
-    .progress-dot.active { width: 112px; background: var(--orange); }
+    .progress-dot.active { width: 80px; background: var(--orange); }
     .progress-dot.done { background: var(--black); }
 
     .progress-label {
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 15px;
+      font-size: 13px;
       letter-spacing: .18em;
       text-transform: uppercase;
     }
 
     /* ---- Columna izquierda ---- */
-    .main { padding: 60px var(--gutter) 80px; }
+    .main { padding: clamp(16px, 3vh, 36px) var(--gutter) 48px; }
 
     .title {
       font-family: var(--font-display);
       font-weight: 900;
-      font-size: clamp(56px, 7vw, 104px);
+      font-size: clamp(44px, min(4.6vw, 8vh), 72px);
       line-height: .95;
-      letter-spacing: -3px;
+      letter-spacing: -2px;
     }
 
     .title em {
@@ -111,22 +111,22 @@
       font-style: italic;
       font-weight: 400;
       color: var(--orange);
-      letter-spacing: -2px;
-      margin-top: 4px;
+      letter-spacing: -1px;
+      margin-top: 2px;
     }
 
     .lead {
-      font-size: clamp(18px, 2vw, 28px);
-      line-height: 1.35;
-      margin-top: 48px;
+      font-size: clamp(16px, 1.4vw, 20px);
+      line-height: 1.4;
+      margin-top: clamp(12px, 2.4vh, 24px);
       max-width: 780px;
     }
 
     /* ---- Upload ---- */
     .upload-zone {
       position: relative;
-      margin-top: 56px;
-      min-height: 528px;
+      margin-top: clamp(16px, 3vh, 28px);
+      min-height: clamp(220px, 34vh, 340px);
       border: 4px dashed #6f6f6f;
       display: flex;
       flex-direction: column;
@@ -135,7 +135,7 @@
       text-align: center;
       cursor: pointer;
       transition: background .2s ease;
-      padding: 40px 24px 90px;
+      padding: 28px 24px 56px;
     }
 
     .upload-zone:hover { background: #fafafa; }
@@ -144,19 +144,19 @@
     .upload-zone input[type="file"] { display: none; }
 
     .upload-icon {
-      width: 78px;
-      height: 78px;
+      width: 56px;
+      height: 56px;
       border: 2px solid var(--gray-200);
       border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .upload-icon svg {
-      width: 34px;
-      height: 34px;
+      width: 26px;
+      height: 26px;
       stroke: #777;
       fill: none;
       stroke-width: 1.6;
@@ -168,14 +168,14 @@
       display: block;
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: 36px;
-      letter-spacing: -.5px;
+      font-size: 24px;
+      letter-spacing: -.3px;
     }
 
     .upload-text span {
       display: inline-block;
       margin-top: 4px;
-      font-size: 36px;
+      font-size: 22px;
       color: #6b6b6b;
       text-decoration: underline;
       text-decoration-thickness: 2px;
@@ -184,10 +184,10 @@
 
     .upload-hint {
       position: absolute;
-      bottom: 40px;
+      bottom: 20px;
       left: 0;
       right: 0;
-      font-size: 20px;
+      font-size: 15px;
       color: var(--gray-500);
     }
 
@@ -196,7 +196,7 @@
 
     .upload-preview {
       max-width: 100%;
-      max-height: 420px;
+      max-height: 26vh;
       object-fit: contain;
       box-shadow: 0 10px 30px rgba(0,0,0,.08);
     }
@@ -219,10 +219,10 @@
     .section-label {
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 24px;
+      font-size: 17px;
       text-transform: uppercase;
-      margin-top: 64px;
-      margin-bottom: 30px;
+      margin-top: clamp(20px, 3.5vh, 36px);
+      margin-bottom: 14px;
     }
 
     .tipo-grid {
@@ -232,7 +232,7 @@
     }
 
     .tipo-btn {
-      min-height: 178px;
+      min-height: clamp(96px, 14vh, 140px);
       border: 1.5px solid var(--gray-300);
       border-radius: 6px;
       background: var(--white);
@@ -241,11 +241,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 20px;
-      padding: 20px 10px;
+      gap: 12px;
+      padding: 14px 8px;
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 20px;
+      font-size: 15px;
       line-height: 1.25;
       text-transform: uppercase;
       text-align: center;
@@ -256,8 +256,8 @@
     .tipo-btn:hover { border-color: var(--black); }
 
     .tipo-btn svg {
-      width: 48px;
-      height: 48px;
+      width: 38px;
+      height: 38px;
       padding: 4px;
       stroke: #9a9a9a;
       fill: none;
@@ -275,20 +275,20 @@
     .tipo-btn.selected svg { stroke: var(--black); background: var(--white); }
 
     /* ---- Formulario de contexto (paso 2) ---- */
-    .form-group { margin-top: 44px; }
+    .form-group { margin-top: clamp(20px, 3.5vh, 32px); }
 
     .form-group label {
       display: block;
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 22px;
+      font-size: 17px;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .form-group small {
       display: block;
-      font-size: 16px;
+      font-size: 14px;
       color: var(--gray-500);
     }
 
@@ -296,9 +296,9 @@
       width: 100%;
       border: none;
       border-bottom: 2px solid var(--black);
-      padding: 14px 0;
+      padding: 10px 0;
       font-family: var(--font-body);
-      font-size: 22px;
+      font-size: 18px;
       background: transparent;
       color: var(--black);
       outline: none;
@@ -310,12 +310,12 @@
     .form-input:focus { border-color: var(--orange); }
 
     .back-link {
-      margin-top: 56px;
+      margin-top: 32px;
       background: none;
       border: none;
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 16px;
+      font-size: 13px;
       letter-spacing: .12em;
       text-transform: uppercase;
       color: var(--gray-500);
@@ -341,7 +341,7 @@
     .aside {
       background: var(--black);
       color: var(--white);
-      padding: 84px 40px 40px 36px;
+      padding: clamp(28px, 5vh, 56px) 36px 28px;
       display: flex;
       flex-direction: column;
     }
@@ -349,7 +349,7 @@
     .aside-kicker {
       font-family: var(--font-display);
       font-weight: 500;
-      font-size: 20px;
+      font-size: 14px;
       letter-spacing: .32em;
       text-transform: uppercase;
       color: var(--orange);
@@ -357,28 +357,28 @@
 
     .aside-quote {
       font-family: var(--font-serif);
-      font-size: clamp(36px, 3.4vw, 50px);
-      line-height: 1.04;
-      margin-top: 46px;
-      padding-bottom: 52px;
+      font-size: clamp(26px, min(2.3vw, 4.4vh), 38px);
+      line-height: 1.08;
+      margin-top: clamp(16px, 3vh, 28px);
+      padding-bottom: clamp(20px, 4vh, 36px);
       border-bottom: 1px solid rgba(255,255,255,.85);
     }
 
     .aside-quote em { font-style: italic; }
-    .aside-tips-title { margin-top: 52px; }
+    .aside-tips-title { margin-top: clamp(20px, 4vh, 36px); }
 
     .aside-tips {
       list-style: none;
-      margin-top: 34px;
+      margin-top: 16px;
       display: flex;
       flex-direction: column;
-      gap: 26px;
+      gap: 14px;
     }
 
     .aside-tips li {
       position: relative;
-      padding-left: 30px;
-      font-size: 18px;
+      padding-left: 24px;
+      font-size: 15px;
       line-height: 1.4;
     }
 
@@ -395,7 +395,7 @@
 
     .aside-footer {
       margin-top: auto;
-      padding-top: 30px;
+      padding-top: 20px;
       border-top: 1px solid rgba(255,255,255,.85);
       display: flex;
       justify-content: center;
@@ -410,15 +410,15 @@
       color: var(--white);
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 22px;
+      font-size: 17px;
       text-transform: uppercase;
       cursor: pointer;
       padding: 8px 0;
     }
 
     .next-btn .arrow {
-      width: 44px;
-      height: 44px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: var(--orange);
       display: flex;
@@ -442,9 +442,9 @@
 
     .aside-help {
       text-align: center;
-      font-size: 14px;
+      font-size: 13px;
       color: rgba(255,255,255,.55);
-      margin-top: 12px;
+      margin-top: 8px;
       min-height: 1.2em;
     }
 
@@ -496,8 +496,7 @@
     /* ================= RESPONSIVE ================= */
     @media (max-width: 1100px) {
       :root { --gutter: 48px; }
-      .upload-text strong, .upload-text span { font-size: 28px; }
-      .tipo-btn { font-size: 16px; min-height: 150px; }
+      .tipo-btn { font-size: 14px; }
     }
 
     @media (max-width: 860px) {
@@ -512,11 +511,11 @@
       .title { letter-spacing: -1.5px; }
       .lead { margin-top: 24px; }
       .upload-zone { min-height: 300px; margin-top: 32px; }
-      .upload-text strong, .upload-text span { font-size: 22px; }
+      .upload-text strong, .upload-text span { font-size: 19px; }
       .upload-hint { font-size: 15px; bottom: 24px; }
       .section-label { font-size: 18px; margin-top: 40px; margin-bottom: 16px; }
       .tipo-grid { grid-template-columns: repeat(2, 1fr); }
-      .tipo-btn { min-height: 130px; font-size: 15px; }
+      .tipo-btn { min-height: 110px; font-size: 14px; }
       .form-group label { font-size: 18px; }
       .form-input { font-size: 18px; }
       .aside { padding: 40px 16px 32px; }
