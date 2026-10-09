@@ -22,6 +22,10 @@
   const errorMsg     = document.getElementById('errorMsg');
   const loadingOverlay = document.getElementById('loadingOverlay');
   const loadingStep  = document.getElementById('loadingStep');
+  const continuarBtn = document.getElementById('continuarBtn');
+  const continuarHelp = document.getElementById('continuarHelp');
+  const submitHelp   = document.getElementById('submitHelp');
+  const backBtn      = document.getElementById('backBtn');
 
   /* ---- Mensajes de carga rotativos ---- */
   const loadingMessages = [
@@ -43,6 +47,14 @@
     // Evitar que el botón "Cambiar imagen" (dentro de la zona) reabra el input
     if (e.target.closest('.upload-change-btn')) return;
     fileInput.click();
+  });
+
+  /* Teclado: Enter o espacio abren el selector */
+  uploadZone.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !state.base64) {
+      e.preventDefault();
+      fileInput.click();
+    }
   });
 
   fileInput.addEventListener('change', () => {
@@ -93,8 +105,6 @@
       // Mostrar preview
       renderPreview(dataUrl);
 
-      // Mostrar formulario
-      mainForm.style.display = 'block';
       updateSubmitState();
     };
     reader.readAsDataURL(file);
@@ -151,7 +161,6 @@
     if (hint) hint.style.display = '';
 
     fileInput.value = '';
-    mainForm.style.display = 'none';
     updateSubmitState();
   }
 
@@ -161,8 +170,12 @@
 
   document.querySelectorAll('.tipo-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tipo-btn').forEach((b) => b.classList.remove('selected'));
+      document.querySelectorAll('.tipo-btn').forEach((b) => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-checked', 'false');
+      });
       btn.classList.add('selected');
+      btn.setAttribute('aria-checked', 'true');
       state.tipo = btn.dataset.tipo;
       updateSubmitState();
     });
@@ -185,7 +198,45 @@
       mensaje && mensaje.value.trim();
 
     submitBtn.disabled = !formReady;
+
+    // Paso 1: necesita archivo + tipo
+    const paso1Listo = Boolean(state.base64 && state.tipo);
+    continuarBtn.disabled = !paso1Listo;
+    if (!state.base64 && !state.tipo) continuarHelp.textContent = 'Subí un archivo y elegí el tipo de proyecto.';
+    else if (!state.base64) continuarHelp.textContent = 'Falta subir el archivo.';
+    else if (!state.tipo) continuarHelp.textContent = 'Falta elegir el tipo de proyecto.';
+    else continuarHelp.textContent = '';
+
+    submitHelp.textContent = formReady ? '' : 'Completá los tres campos.';
   }
+
+  /* ==================================================
+     3b. NAVEGACIÓN ENTRE PASOS
+  ================================================== */
+
+  function goToStep(n) {
+    document.querySelectorAll('.step').forEach((el) => {
+      el.classList.toggle('active', el.dataset.step === String(n));
+    });
+    document.querySelectorAll('.progress-dot').forEach((dot) => {
+      const d = Number(dot.dataset.dot);
+      dot.classList.toggle('active', d === n);
+      dot.classList.toggle('done', d < n);
+    });
+    document.getElementById('progressLabel').textContent = 'Paso ' + n + ' de 3';
+    hideError();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 2) {
+      const first = document.getElementById('objetivo');
+      if (first) setTimeout(() => first.focus({ preventScroll: true }), 300);
+    }
+  }
+
+  continuarBtn.addEventListener('click', () => {
+    if (!continuarBtn.disabled) goToStep(2);
+  });
+
+  backBtn.addEventListener('click', () => goToStep(1));
 
   /* Escuchar cambios en los inputs del formulario */
   ['objetivo', 'audiencia', 'mensaje'].forEach((id) => {

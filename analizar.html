@@ -3,132 +3,690 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRITIA — Crítica técnica de diseño</title>
-  <link rel="stylesheet" href="style.css">
+  <title>CRITIA — Analizar diseño</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --orange: #ff5a0a;
+      --gray-500: #7a7a7a;
+      --gray-300: #c9c9c9;
+      --gray-200: #dedede;
+      --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      --gutter: 80px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ================= LAYOUT ================= */
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 512px);
+      grid-template-rows: 105px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ---- Header ---- */
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 32px;
+      letter-spacing: -1px;
+      color: var(--black);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+
+    .logo::after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    .progress, .progress-dots {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .progress-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 11px;
+      background: var(--gray-200);
+      transition: width .3s ease, background .3s ease;
+    }
+
+    .progress-dot.active { width: 112px; background: var(--orange); }
+    .progress-dot.done { background: var(--black); }
+
+    .progress-label {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Columna izquierda ---- */
+    .main { padding: 60px var(--gutter) 80px; }
+
+    .title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(56px, 7vw, 104px);
+      line-height: .95;
+      letter-spacing: -3px;
+    }
+
+    .title em {
+      display: block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--orange);
+      letter-spacing: -2px;
+      margin-top: 4px;
+    }
+
+    .lead {
+      font-size: clamp(18px, 2vw, 28px);
+      line-height: 1.35;
+      margin-top: 48px;
+      max-width: 780px;
+    }
+
+    /* ---- Upload ---- */
+    .upload-zone {
+      position: relative;
+      margin-top: 56px;
+      min-height: 528px;
+      border: 4px dashed #6f6f6f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: background .2s ease;
+      padding: 40px 24px 90px;
+    }
+
+    .upload-zone:hover { background: #fafafa; }
+    .upload-zone.drag-over { background: #fff4ee; }
+    .upload-zone:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+    .upload-zone input[type="file"] { display: none; }
+
+    .upload-icon {
+      width: 78px;
+      height: 78px;
+      border: 2px solid var(--gray-200);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .upload-icon svg {
+      width: 34px;
+      height: 34px;
+      stroke: #777;
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .upload-text strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 36px;
+      letter-spacing: -.5px;
+    }
+
+    .upload-text span {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 36px;
+      color: #6b6b6b;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+
+    .upload-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      font-size: 20px;
+      color: var(--gray-500);
+    }
+
+    .upload-zone.has-image { cursor: default; padding: 32px; }
+    .upload-zone.has-image:hover { background: transparent; }
+
+    .upload-preview {
+      max-width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .upload-change-btn {
+      margin-top: 24px;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: #6b6b6b;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      cursor: pointer;
+    }
+
+    .upload-change-btn:hover { color: var(--black); }
+
+    /* ---- Tipo de proyecto ---- */
+    .section-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 24px;
+      text-transform: uppercase;
+      margin-top: 64px;
+      margin-bottom: 30px;
+    }
+
+    .tipo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .tipo-btn {
+      min-height: 178px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px 10px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.25;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+
+    .tipo-btn:hover { border-color: var(--black); }
+
+    .tipo-btn svg {
+      width: 48px;
+      height: 48px;
+      padding: 4px;
+      stroke: #9a9a9a;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tipo-btn.selected {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    .tipo-btn.selected svg { stroke: var(--black); background: var(--white); }
+
+    /* ---- Formulario de contexto (paso 2) ---- */
+    .form-group { margin-top: 44px; }
+
+    .form-group label {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .form-group small {
+      display: block;
+      font-size: 16px;
+      color: var(--gray-500);
+    }
+
+    .form-input {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid var(--black);
+      padding: 14px 0;
+      font-family: var(--font-body);
+      font-size: 22px;
+      background: transparent;
+      color: var(--black);
+      outline: none;
+      resize: vertical;
+      transition: border-color .15s ease;
+    }
+
+    .form-input::placeholder { color: #a8a8a8; }
+    .form-input:focus { border-color: var(--orange); }
+
+    .back-link {
+      margin-top: 56px;
+      background: none;
+      border: none;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      cursor: pointer;
+    }
+
+    .back-link:hover { color: var(--black); }
+
+    /* ---- Error ---- */
+    .error-msg {
+      display: none;
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-left: 4px solid var(--orange);
+      background: #fff4ee;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* ================= PANEL NEGRO ================= */
+    .aside {
+      background: var(--black);
+      color: var(--white);
+      padding: 84px 40px 40px 36px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .aside-kicker {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 20px;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .aside-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 3.4vw, 50px);
+      line-height: 1.04;
+      margin-top: 46px;
+      padding-bottom: 52px;
+      border-bottom: 1px solid rgba(255,255,255,.85);
+    }
+
+    .aside-quote em { font-style: italic; }
+    .aside-tips-title { margin-top: 52px; }
+
+    .aside-tips {
+      list-style: none;
+      margin-top: 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .aside-tips li {
+      position: relative;
+      padding-left: 30px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .aside-tips li::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: .62em;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--white);
+    }
+
+    .aside-footer {
+      margin-top: auto;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,.85);
+      display: flex;
+      justify-content: center;
+    }
+
+    .next-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 22px;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 8px 0;
+    }
+
+    .next-btn .arrow {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease;
+    }
+
+    .next-btn .arrow svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--white);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .next-btn:hover:not(:disabled) .arrow { transform: translateX(4px); }
+    .next-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    .aside-help {
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255,255,255,.55);
+      margin-top: 12px;
+      min-height: 1.2em;
+    }
+
+    /* ================= PASOS ================= */
+    .step { display: none; }
+    .step.active { display: block; }
+    .aside .step.active { display: flex; flex-direction: column; flex: 1; }
+
+    /* ================= LOADING ================= */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      color: var(--white);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 100;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .loading-overlay.visible { display: flex; }
+
+    .loading-spinner {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,.15);
+      border-top-color: var(--orange);
+      animation: spin .9s linear infinite;
+    }
+
+    .loading-text { font-family: var(--font-serif); font-size: 44px; }
+    .loading-text em { font-style: italic; color: var(--orange); }
+
+    .loading-steps {
+      font-family: var(--font-display);
+      font-size: 15px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 1100px) {
+      :root { --gutter: 48px; }
+      .upload-text strong, .upload-text span { font-size: 28px; }
+      .tipo-btn { font-size: 16px; min-height: 150px; }
+    }
+
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+      .topbar { padding: 20px 16px; }
+      .logo { font-size: 24px; }
+      .progress, .progress-dots { gap: 10px; }
+      .progress-dot { width: 12px; height: 12px; }
+      .progress-dot.active { width: 48px; }
+      .progress-label { font-size: 12px; }
+      .main { padding: 24px 16px 40px; }
+      .title { letter-spacing: -1.5px; }
+      .lead { margin-top: 24px; }
+      .upload-zone { min-height: 300px; margin-top: 32px; }
+      .upload-text strong, .upload-text span { font-size: 22px; }
+      .upload-hint { font-size: 15px; bottom: 24px; }
+      .section-label { font-size: 18px; margin-top: 40px; margin-bottom: 16px; }
+      .tipo-grid { grid-template-columns: repeat(2, 1fr); }
+      .tipo-btn { min-height: 130px; font-size: 15px; }
+      .form-group label { font-size: 18px; }
+      .form-input { font-size: 18px; }
+      .aside { padding: 40px 16px 32px; }
+      .aside-kicker { font-size: 14px; }
+      .aside-footer { margin-top: 40px; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="brand">CRIT<em>IA</em></a>
-      <span class="header-tagline">Crítica técnica de diseño</span>
-    </div>
-  </header>
-
   <!-- Loading overlay -->
-  <div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Analizando tu diseño…</div>
+    <div class="loading-text">Analizando tu <em>pieza</em>…</div>
     <div class="loading-steps" id="loadingStep">Evaluando jerarquía visual</div>
   </div>
 
-  <!-- Main content -->
-  <main>
-    <div class="container">
+  <div class="shell">
 
-      <h1 class="page-title">Subí tu<br><em style="font-style:italic; font-family:'DM Serif Display',Georgia,serif;">diseño.</em></h1>
-      <p class="page-subtitle">Recibís una crítica técnica estructurada basada en principios de diseño gráfico.</p>
+    <!-- Header -->
+    <header class="topbar">
+      <a href="index.html" class="logo" aria-label="CRITIA, volver al inicio">CRITIA</a>
+      <div class="progress" aria-label="Progreso">
+        <div class="progress-dots">
+          <span class="progress-dot active" data-dot="1"></span>
+          <span class="progress-dot" data-dot="2"></span>
+          <span class="progress-dot" data-dot="3"></span>
+        </div>
+        <span class="progress-label" id="progressLabel">Paso 1 de 3</span>
+      </div>
+    </header>
 
-      <!-- Upload zone -->
-      <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept="image/*" aria-label="Subir imagen de diseño">
-        <span class="upload-icon">↑</span>
-        <div class="upload-text">Arrastrá tu diseño acá o hacé clic para elegirlo</div>
-        <div class="upload-hint">JPG, PNG, PDF — máximo 10 MB</div>
+    <!-- ============ COLUMNA IZQUIERDA ============ -->
+    <main class="main">
+
+      <!-- PASO 1: Archivo + tipo -->
+      <section class="step active" data-step="1">
+        <h1 class="title">Empecemos<em>por el archivo</em></h1>
+        <p class="lead">Arrastrá o seleccioná el archivo que querés analizar.</p>
+
+        <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Subir archivo de diseño">
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" aria-label="Subir imagen de diseño">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <polyline points="8 11 12 7 16 11"/>
+              <line x1="12" y1="7" x2="12" y2="17"/>
+            </svg>
+          </div>
+          <div class="upload-text">
+            <strong>Arrastrá tu pieza acá</strong>
+            <span>o hacé click para seleccionar</span>
+          </div>
+          <div class="upload-hint">PNG, JPG, WEBP &nbsp; máx 10 MB</div>
+        </div>
+
+        <h2 class="section-label">Tipo de proyecto</h2>
+        <div class="tipo-grid" role="radiogroup" aria-label="Tipo de proyecto">
+          <button type="button" class="tipo-btn" data-tipo="Identidad / Logo" role="radio" aria-checked="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8"/>
+              <polyline points="9 16 12 8 15 16"/>
+              <line x1="10.2" y1="13.2" x2="13.8" y2="13.2"/>
+            </svg>
+            <span>Identidad /<br>Logo</span>
+          </button>
+          <button type="button" class="tipo-btn" data-tipo="Afiche / Post" role="radio" aria-checked="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="3" width="12" height="18" rx="1"/>
+              <line x1="9" y1="8" x2="15" y2="8"/>
+              <line x1="9" y1="11" x2="15" y2="11"/>
+              <line x1="9" y1="14" x2="13" y2="14"/>
+            </svg>
+            <span>Afiche /<br>Post</span>
+          </button>
+          <button type="button" class="tipo-btn" data-tipo="Packaging / Editorial" role="radio" aria-checked="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="6" width="16" height="14" rx="1"/>
+              <line x1="8" y1="3" x2="8" y2="6"/>
+              <line x1="16" y1="3" x2="16" y2="6"/>
+            </svg>
+            <span>Packaging /<br>Editorial</span>
+          </button>
+          <button type="button" class="tipo-btn" data-tipo="UI / Presentación" role="radio" aria-checked="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="13" rx="1.5"/>
+              <line x1="7" y1="9" x2="17" y2="9"/>
+              <line x1="7" y1="12" x2="14" y2="12"/>
+              <line x1="10" y1="20" x2="14" y2="20"/>
+              <line x1="12" y1="17" x2="12" y2="20"/>
+            </svg>
+            <span>UI /<br>Presentación</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- PASO 2: Contexto -->
+      <section class="step" data-step="2">
+        <h1 class="title">Ahora,<em>el contexto</em></h1>
+        <p class="lead">Contanos para qué es la pieza. Así la crítica evalúa si comunica, no solo si se ve bien.</p>
+
+        <form id="mainForm" novalidate>
+          <div class="form-group">
+            <label for="objetivo">Objetivo</label>
+            <small>¿Qué tiene que lograr esta pieza?</small>
+            <input type="text" id="objetivo" class="form-input" placeholder="Ej: Promocionar una exposición de arte contemporáneo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="audiencia">Público</label>
+            <small>¿A quién va dirigida?</small>
+            <input type="text" id="audiencia" class="form-input" placeholder="Ej: Estudiantes universitarios de arte, 18 a 30 años" required>
+          </div>
+
+          <div class="form-group">
+            <label for="mensaje">Concepto</label>
+            <small>¿Qué mensaje o sensación tiene que transmitir?</small>
+            <textarea id="mensaje" class="form-input" rows="2" placeholder="Ej: Minimalismo contemporáneo, exclusividad accesible" required></textarea>
+          </div>
+        </form>
+
+        <button type="button" class="back-link" id="backBtn">← Volver al archivo</button>
+      </section>
+
+      <div class="error-msg" id="errorMsg" role="alert"></div>
+    </main>
+
+    <!-- ============ PANEL NEGRO ============ -->
+    <aside class="aside">
+
+      <!-- Panel paso 1 -->
+      <div class="step active" data-step="1">
+        <p class="aside-kicker">En este paso</p>
+        <blockquote class="aside-quote">"Buenas críticas empiezan por buenos originales. Subí la <em>última</em> versión, no la primera."</blockquote>
+        <p class="aside-kicker aside-tips-title">Consejos</p>
+        <ul class="aside-tips">
+          <li>Subí el archivo en alta resolución si podés.</li>
+          <li>Un mockup ayuda más que un asset aislado.</li>
+          <li>Si es una serie, subí la pieza principal.</li>
+        </ul>
+        <div class="aside-footer">
+          <button type="button" class="next-btn" id="continuarBtn" disabled>
+            Continuar
+            <span class="arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+          </button>
+        </div>
+        <p class="aside-help" id="continuarHelp">Subí un archivo y elegí el tipo de proyecto.</p>
       </div>
 
-      <!-- Error -->
-      <div class="error-msg" id="errorMsg"></div>
-
-      <!-- Form (oculto hasta que haya imagen) -->
-      <form id="mainForm" style="display:none;">
-
-        <!-- Tipo de proyecto -->
-        <div class="form-section">
-          <label class="form-label">Tipo de proyecto</label>
-          <div class="tipo-grid">
-            <button type="button" class="tipo-btn" data-tipo="Póster / Afiche">
-              <span class="tipo-icon">🖼</span>Póster
-            </button>
-            <button type="button" class="tipo-btn" data-tipo="Logotipo / Marca">
-              <span class="tipo-icon">◈</span>Logo
-            </button>
-            <button type="button" class="tipo-btn" data-tipo="Diseño editorial (libro, revista)">
-              <span class="tipo-icon">📖</span>Editorial
-            </button>
-            <button type="button" class="tipo-btn" data-tipo="Packaging / Envase">
-              <span class="tipo-icon">📦</span>Packaging
-            </button>
-            <button type="button" class="tipo-btn" data-tipo="Interfaz web o app">
-              <span class="tipo-icon">🖥</span>Web / App
-            </button>
-            <button type="button" class="tipo-btn" data-tipo="Otro">
-              <span class="tipo-icon">+</span>Otro
-            </button>
-          </div>
+      <!-- Panel paso 2 -->
+      <div class="step" data-step="2">
+        <p class="aside-kicker">En este paso</p>
+        <blockquote class="aside-quote">"Sin contexto, la crítica solo ve <em>estética</em>. Con contexto, ve si la pieza cumple."</blockquote>
+        <p class="aside-kicker aside-tips-title">Consejos</p>
+        <ul class="aside-tips">
+          <li>Sé concreto: "vender entradas" dice más que "difundir".</li>
+          <li>Describí al público con edad, intereses o contexto.</li>
+          <li>El concepto puede ser 2 o 3 palabras clave.</li>
+        </ul>
+        <div class="aside-footer">
+          <button type="submit" form="mainForm" class="next-btn" id="submitBtn" disabled>
+            Analizar
+            <span class="arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+          </button>
         </div>
+        <p class="aside-help" id="submitHelp">Completá los tres campos.</p>
+      </div>
 
-        <hr class="divider">
-
-        <!-- Contexto -->
-        <div class="form-section">
-          <label class="form-label">Contexto del proyecto</label>
-          <p style="font-size:13px; color:var(--fg-muted); margin-bottom:1rem;">
-            Sin contexto, CRITIA solo ve la estética. Con contexto, evalúa si el diseño <em>comunica lo que tiene que comunicar</em>.
-          </p>
-
-          <div class="form-group">
-            <label for="objetivo">¿Cuál es el objetivo de esta pieza?</label>
-            <input
-              type="text"
-              id="objetivo"
-              class="form-input"
-              placeholder="Ej: Promocionar una exposición de arte contemporáneo"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="audiencia">¿A quién va dirigida?</label>
-            <input
-              type="text"
-              id="audiencia"
-              class="form-input"
-              placeholder="Ej: Estudiantes universitarios de arte, 18–30 años"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="mensaje">¿Qué mensaje o sensación principal debería transmitir?</label>
-            <textarea
-              id="mensaje"
-              class="form-textarea"
-              rows="2"
-              placeholder="Ej: Minimalismo contemporáneo, exclusividad accesible, cultura urbana"
-              required
-            ></textarea>
-          </div>
-        </div>
-
-        <!-- Submit -->
-        <button type="submit" class="btn-primary" id="submitBtn" disabled>
-          <span>Analizar diseño</span>
-          <span>→</span>
-        </button>
-
-      </form>
-
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <span>CRITIA · Crítica técnica de diseño</span>
-      <span>Diseño Multiplataforma · Universidad Champagnat</span>
-    </div>
-  </footer>
+    </aside>
+  </div>
 
   <script src="app.js"></script>
 </body>
