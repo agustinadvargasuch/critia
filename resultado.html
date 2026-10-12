@@ -3,71 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRITIA — Resultado del análisis</title>
-  <link rel="stylesheet" href="style.css">
+  <title>CRITIA — Tu crítica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="critia.css">
+  <style>
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 41%) 1fr;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* ---- Panel negro: pieza y contexto ---- */
+    .pieza {
+      background: var(--black);
+      color: var(--white);
+      padding: clamp(28px, 6vh, 72px) 36px 32px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pieza-img {
+      margin-top: 32px;
+      background: var(--beige);
+      aspect-ratio: 527 / 617;
+      max-height: 52vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pieza-img img { width: 100%; height: 100%; object-fit: contain; }
+
+    .ctx { margin-top: 32px; display: grid; gap: 22px; }
+
+    .ctx dt {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .ctx dd { margin-top: 6px; font-size: 16px; line-height: 1.45; }
+    .ctx dd.vacio { color: rgba(255,255,255,.45); font-style: italic; }
+
+    .pieza-footer {
+      margin-top: auto;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,.85);
+      display: flex;
+      justify-content: center;
+    }
+
+    .pieza-spacer { flex: 1; min-height: 32px; }
+
+    /* ---- Columna derecha: dimensiones ---- */
+    .critica { padding: clamp(24px, 4vh, 40px) clamp(20px, 4vw, 56px) 48px; }
+
+    .critica .display { font-size: clamp(40px, 5vw, 76px); }
+
+    .critica .legend { margin-top: 24px; }
+
+    .dims { margin-top: 20px; }
+
+    .dim { border-bottom: 1px solid var(--gray-200); }
+
+    .dim-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 22px 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      color: var(--black);
+    }
+
+    .dim-head h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(26px, 2.6vw, 40px);
+      letter-spacing: -.01em;
+      line-height: 1.05;
+    }
+
+    .dim-head .chev {
+      width: 18px;
+      height: 18px;
+      stroke: var(--gray-500);
+      fill: none;
+      stroke-width: 2;
+      transition: transform .2s ease;
+      margin-left: auto;
+    }
+
+    .dim.open .dim-head .chev { transform: rotate(180deg); }
+
+    .dim-body { display: none; padding: 4px 0 34px; }
+    .dim.open .dim-body { display: grid; }
+
+    .bloques {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 40px;
+    }
+
+    .bloque-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    .bloque-label.naranja { color: var(--orange); }
+
+    .bloque p {
+      margin-top: 10px;
+      padding-left: 38px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* ---- Síntesis ---- */
+    .sintesis {
+      margin-top: 40px;
+      padding: 28px;
+      background: var(--beige);
+    }
+
+    .sintesis blockquote {
+      margin-top: 12px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(24px, 2.2vw, 32px);
+      line-height: 1.15;
+    }
+
+    .acciones { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .demo-pill {
+      background: var(--beige);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 20px;
+    }
+
+    .vacio-total { padding: 80px var(--gutter); text-align: center; }
+    .vacio-total p { margin: 16px auto 28px; max-width: 520px; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .pieza { padding: 28px 16px; }
+      .pieza-img { max-height: 60vh; }
+      .bloques { grid-template-columns: 1fr; gap: 24px; }
+      .critica { padding: 28px 16px 40px; }
+    }
+
+    @media print {
+      .layout { display: block; }
+      .pieza { padding: 24px; }
+      .pieza-img { max-height: 340px; }
+      .dim .dim-body { display: grid !important; }
+      .dim { break-inside: avoid; }
+      .dim-head .chev { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="brand">CRIT<em>IA</em></a>
-      <span class="header-tagline">Crítica técnica de diseño</span>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="logo" aria-label="CRITIA, volver al inicio">CRITIA</a>
+      <span class="demo-pill" id="demoPill" hidden>Ejemplo ilustrativo</span>
+    </div>
+    <div class="topbar-right no-print">
+      <a href="analizar.html" class="topbar-link" id="atrasLink">Atrás</a>
+      <span class="progress-full" aria-hidden="true"></span>
+      <button type="button" class="btn btn-sm" id="exportarBtn">Exportar</button>
     </div>
   </header>
 
-  <main>
-    <div class="container">
+  <div id="app"></div>
 
-      <!-- Imagen del diseño -->
-      <div class="resultado-header">
-        <img id="resultadoImg" class="resultado-image" src="" alt="Tu diseño analizado">
-        <p id="resultadoMeta" style="font-size:12px; color:var(--fg-muted); margin-top:0.5rem;"></p>
-      </div>
-
-      <!-- Pregunta reflexiva (Modo aprendizaje) -->
-      <div class="pregunta-box" id="preguntaBox">
-        <div class="pregunta-label">Antes de ver el análisis</div>
-        <p class="pregunta-text" id="preguntaText">
-          ¿Cuál es el primer elemento visual que llama la atención en tu diseño? ¿Es el que debería tener prioridad según tu objetivo?
-        </p>
-        <textarea
-          id="respuestaInput"
-          class="pregunta-input"
-          rows="3"
-          placeholder="Escribí tu reflexión acá… (no hay respuesta correcta o incorrecta)"
-        ></textarea>
-        <button class="btn-ver-analisis" id="btnVerAnalisis">
-          Ver análisis completo →
-        </button>
-      </div>
-
-      <!-- Dimensiones (ocultas hasta que el usuario responda) -->
-      <div class="dimensiones-section" id="dimensionesSection">
-        <h2 class="dimensiones-title">Análisis técnico</h2>
-        <div id="dimensionesContainer">
-          <!-- Generado dinámicamente por resultado.js -->
-        </div>
-
-        <!-- Botón para analizar otro diseño -->
-        <button class="btn-secondary" onclick="window.location.href='analizar.html'">
-          Analizar otro diseño
-        </button>
-      </div>
-
-      <!-- Error (si sessionStorage está vacío) -->
-      <div class="error-msg" id="errorMsg" style="margin-top:2rem;"></div>
-
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <span>CRITIA · Crítica técnica de diseño</span>
-      <span>Diseño Multiplataforma · Universidad Champagnat</span>
-    </div>
-  </footer>
-
+  <script src="critia-common.js"></script>
+  <script src="ejemplos-data.js"></script>
   <script src="resultado.js"></script>
 </body>
 </html>

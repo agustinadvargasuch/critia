@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Modo aprendizaje</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="critia.css">
+  <style>
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 41%) 1fr;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* ---- Panel izquierdo ---- */
+    .pieza {
+      background: var(--black);
+      color: var(--white);
+      padding: clamp(28px, 6vh, 72px) 36px 32px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pieza-img {
+      margin-top: 32px;
+      background: var(--beige);
+      aspect-ratio: 527 / 617;
+      max-height: 48vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pieza-img img { width: 100%; height: 100%; object-fit: contain; }
+
+    .progreso-titulo {
+      margin-top: 32px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .barras {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .barras span {
+      height: 12px;
+      border-radius: 6px;
+      background: var(--gray-200);
+      transition: background .3s ease;
+    }
+
+    .barras span.hecha { background: var(--white); }
+    .barras span.actual { background: var(--orange); }
+
+    .progreso-texto { margin-top: 24px; font-size: 16px; line-height: 1.5; }
+    .progreso-texto strong { color: var(--orange); }
+
+    .porque-preguntar {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.85);
+    }
+
+    .porque-preguntar h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .porque-preguntar p { margin-top: 8px; font-size: 16px; line-height: 1.45; }
+
+    .pieza-spacer { flex: 1; min-height: 32px; }
+
+    /* ---- Columna derecha ---- */
+    .derecha { padding: 4px clamp(16px, 2vw, 28px) 48px; }
+
+    .pregunta-card {
+      background: var(--black);
+      color: var(--white);
+      padding: clamp(28px, 5vh, 48px) 38px 38px;
+      position: relative;
+    }
+
+    .ayuda-btn {
+      position: absolute;
+      top: 34px;
+      right: 34px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: var(--orange);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 32px;
+      cursor: pointer;
+    }
+
+    .pregunta-num {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--orange);
+      padding-right: 80px;
+    }
+
+    .pregunta {
+      margin-top: 18px;
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 3.4vw, 54px);
+      line-height: 1.02;
+      padding-right: 80px;
+    }
+
+    .pista {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-left: 3px solid var(--orange);
+      background: rgba(255,255,255,.06);
+      font-size: 16px;
+    }
+
+    .respuesta {
+      margin-top: 40px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,.9);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(20px, 2vw, 28px);
+      letter-spacing: .02em;
+      padding: 10px 0;
+      resize: none;
+      outline: none;
+      min-height: 56px;
+    }
+
+    .respuesta::placeholder { color: rgba(255,255,255,.4); }
+    .respuesta:focus { border-bottom-color: var(--orange); }
+
+    .card-acciones {
+      margin-top: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .saltar {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.6);
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .saltar:hover { color: var(--white); }
+
+    /* ---- Revelación ---- */
+    .tu-lectura {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.3);
+    }
+
+    .tu-lectura .kicker { color: rgba(255,255,255,.6); }
+    .tu-lectura p { margin-top: 10px; font-size: 18px; line-height: 1.45; }
+
+    .revelado { padding: 32px clamp(0px, 1vw, 12px) 0; }
+
+    .revelado-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .revelado-head h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(26px, 2.6vw, 40px);
+    }
+
+    .revelado-head .estado { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--gray-700); }
+
+    .bloques {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 40px;
+    }
+
+    .bloque-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    .bloque-label.naranja { color: var(--orange); }
+    .bloque p { margin-top: 10px; padding-left: 38px; font-size: 16px; line-height: 1.5; }
+
+    .siguiente { margin-top: 32px; display: flex; justify-content: flex-end; }
+
+    /* ---- Lista de dimensiones ---- */
+    .lista { padding: 40px clamp(0px, 1vw, 12px) 0; }
+
+    .lista-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .lista-head h2 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(22px, 2.2vw, 32px);
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+
+    .candado {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+
+    .candado svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .lista ul { list-style: none; margin-top: 8px; }
+
+    .lista li button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 0;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(22px, 2.2vw, 32px);
+      color: var(--gray-500);
+      cursor: default;
+    }
+
+    .lista li button:disabled { opacity: .75; }
+    .lista li.hecha button { color: var(--black); cursor: pointer; }
+    .lista li.hecha button:hover { color: var(--orange); }
+    .lista li.actual button { color: var(--orange); }
+    .lista .dot { width: 22px; height: 22px; }
+
+    /* ---- Final ---- */
+    .final h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(34px, 3.4vw, 54px);
+      line-height: 1.02;
+    }
+
+    .final p { margin-top: 16px; font-size: 18px; color: rgba(255,255,255,.75); }
+
+    .vacio-total { padding: 80px var(--gutter); text-align: center; }
+    .vacio-total p { margin: 16px auto 28px; max-width: 520px; }
+    .acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .pieza { padding: 24px 16px; }
+      .pieza-img { max-height: 40vh; aspect-ratio: auto; }
+      .porque-preguntar { margin-top: 28px; }
+      .pieza-spacer { display: none; }
+      .derecha { padding: 0 0 40px; }
+      .pregunta-card { padding: 28px 16px; }
+      .ayuda-btn { top: 20px; right: 16px; width: 44px; height: 44px; font-size: 24px; }
+      .pregunta, .pregunta-num { padding-right: 56px; }
+      .bloques { grid-template-columns: 1fr; gap: 22px; }
+      .revelado, .lista { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="logo" aria-label="CRITIA, volver al inicio">CRITIA</a>
+      <span class="mode-pill">Modo aprendizaje</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-link" id="contador" aria-live="polite">1 de 6 preguntas</span>
+      <a href="resultado.html" class="btn btn-sm" id="salirBtn">Salir del modo</a>
+    </div>
+  </header>
+
+  <div id="app"></div>
+
+  <script src="critia-common.js"></script>
+  <script src="ejemplos-data.js"></script>
+  <script src="aprendizaje.js"></script>
+</body>
+</html>

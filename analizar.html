@@ -24,6 +24,7 @@
     }
 
     html, body { height: 100%; }
+    [hidden] { display: none !important; }
 
     body {
       font-family: var(--font-body);
@@ -96,6 +97,7 @@
 
     /* ---- Columna izquierda ---- */
     .main { padding: clamp(16px, 3vh, 36px) var(--gutter) 48px; }
+    .main > * { max-width: 1100px; }
 
     .title {
       font-family: var(--font-display);
@@ -294,20 +296,101 @@
 
     .form-input {
       width: 100%;
-      border: none;
-      border-bottom: 2px solid var(--black);
-      padding: 10px 0;
+      border: 1.5px solid var(--black);
+      border-radius: 6px;
+      padding: 14px 16px;
+      min-height: 64px;
       font-family: var(--font-body);
-      font-size: 18px;
-      background: transparent;
+      font-size: 17px;
+      line-height: 1.4;
+      background: var(--white);
       color: var(--black);
       outline: none;
       resize: vertical;
       transition: border-color .15s ease;
     }
 
+    textarea.form-input { min-height: 120px; }
     .form-input::placeholder { color: #a8a8a8; }
-    .form-input:focus { border-color: var(--orange); }
+    .form-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,90,10,.15); }
+
+    /* ---- Selector de modo (panel negro, paso 2) ---- */
+    .mode-toggle {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 6px;
+      background: var(--white);
+      border-radius: 50px;
+      margin-left: -16px;
+      margin-right: -16px;
+    }
+
+    .mode-toggle button {
+      border: none;
+      background: transparent;
+      color: var(--black);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 17px;
+      line-height: 1.1;
+      text-transform: uppercase;
+      padding: 12px 10px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .mode-toggle button[aria-checked="true"] {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .mode-desc {
+      margin-top: 14px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: rgba(255,255,255,.7);
+      min-height: 2.9em;
+      padding-bottom: clamp(16px, 3vh, 28px);
+      border-bottom: 1px solid rgba(255,255,255,.85);
+    }
+
+    .resumen { list-style: none; margin-top: 12px; }
+
+    .resumen li {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.85);
+      font-size: 16px;
+    }
+
+    .resumen li:last-child { border-bottom: none; }
+
+    .resumen li span:last-child {
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 60%;
+    }
+
+    .version-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      background: var(--orange);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
 
     .back-link {
       margin-top: 32px;
@@ -521,6 +604,8 @@
       .aside { padding: 40px 16px 32px; }
       .aside-kicker { font-size: 14px; }
       .aside-footer { margin-top: 40px; }
+      .mode-toggle { margin-left: 0; margin-right: 0; }
+      .mode-toggle button { font-size: 14px; }
     }
   </style>
 </head>
@@ -553,8 +638,9 @@
 
       <!-- PASO 1: Archivo + tipo -->
       <section class="step active" data-step="1">
-        <h1 class="title">Empecemos<em>por el archivo</em></h1>
-        <p class="lead">Arrastrá o seleccioná el archivo que querés analizar.</p>
+        <span class="version-badge" id="versionBadge" hidden></span>
+        <h1 class="title" id="step1Title">Empecemos<em>por el archivo</em></h1>
+        <p class="lead" id="step1Lead">Arrastrá o seleccioná el archivo que querés analizar.</p>
 
         <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Subir archivo de diseño">
           <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" aria-label="Subir imagen de diseño">
@@ -614,26 +700,23 @@
 
       <!-- PASO 2: Contexto -->
       <section class="step" data-step="2">
-        <h1 class="title">Ahora,<em>el contexto</em></h1>
-        <p class="lead">Contanos para qué es la pieza. Así la crítica evalúa si comunica, no solo si se ve bien.</p>
+        <h1 class="title">Contame sobre<em>tu pieza</em></h1>
+        <p class="lead">Mientras más contexto das, más precisa es la crítica. Ningún campo es obligatorio, pero todos ayudan.</p>
 
         <form id="mainForm" novalidate>
           <div class="form-group">
             <label for="objetivo">Objetivo</label>
-            <small>¿Qué tiene que lograr esta pieza?</small>
-            <input type="text" id="objetivo" class="form-input" placeholder="Ej: Promocionar una exposición de arte contemporáneo" required>
+            <input type="text" id="objetivo" class="form-input" placeholder="¿Qué tiene que lograr? Ej: vender entradas para un festival">
           </div>
 
           <div class="form-group">
             <label for="audiencia">Público</label>
-            <small>¿A quién va dirigida?</small>
-            <input type="text" id="audiencia" class="form-input" placeholder="Ej: Estudiantes universitarios de arte, 18 a 30 años" required>
+            <input type="text" id="audiencia" class="form-input" placeholder="¿A quién va dirigida? Ej: estudiantes de 18 a 30 años">
           </div>
 
           <div class="form-group">
             <label for="mensaje">Concepto</label>
-            <small>¿Qué mensaje o sensación tiene que transmitir?</small>
-            <textarea id="mensaje" class="form-input" rows="2" placeholder="Ej: Minimalismo contemporáneo, exclusividad accesible" required></textarea>
+            <textarea id="mensaje" class="form-input" rows="3" placeholder="¿Qué tiene que transmitir? Ej: energía, caos controlado, urbano"></textarea>
           </div>
         </form>
 
@@ -667,26 +750,34 @@
 
       <!-- Panel paso 2 -->
       <div class="step" data-step="2">
-        <p class="aside-kicker">En este paso</p>
-        <blockquote class="aside-quote">"Sin contexto, la crítica solo ve <em>estética</em>. Con contexto, ve si la pieza cumple."</blockquote>
-        <p class="aside-kicker aside-tips-title">Consejos</p>
-        <ul class="aside-tips">
-          <li>Sé concreto: "vender entradas" dice más que "difundir".</li>
-          <li>Describí al público con edad, intereses o contexto.</li>
-          <li>El concepto puede ser 2 o 3 palabras clave.</li>
+        <p class="aside-kicker">Modo de análisis</p>
+        <div class="mode-toggle" role="radiogroup" aria-label="Modo de análisis">
+          <button type="button" role="radio" aria-checked="true" data-modo="directa">Crítica<br>directa</button>
+          <button type="button" role="radio" aria-checked="false" data-modo="aprendizaje">Modo<br>aprendizaje</button>
+        </div>
+        <p class="mode-desc" id="modeDesc">Ves las seis dimensiones resueltas de una vez.</p>
+
+        <p class="aside-kicker aside-tips-title">Resumen</p>
+        <ul class="resumen">
+          <li><span>Archivo</span><span id="resArchivo">—</span></li>
+          <li><span>Tipo</span><span id="resTipo">—</span></li>
+          <li><span>Dimensiones</span><span>6</span></li>
+          <li><span>Est. duración</span><span>~ 45 s</span></li>
         </ul>
+
         <div class="aside-footer">
-          <button type="submit" form="mainForm" class="next-btn" id="submitBtn" disabled>
-            Analizar
+          <button type="submit" form="mainForm" class="next-btn" id="submitBtn">
+            Analizar con CRITIA
             <span class="arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
           </button>
         </div>
-        <p class="aside-help" id="submitHelp">Completá los tres campos.</p>
+        <p class="aside-help" id="submitHelp"></p>
       </div>
 
     </aside>
   </div>
 
+  <script src="critia-common.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

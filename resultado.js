@@ -1,116 +1,102 @@
 /* ========================================
    CRITIA — resultado.js
-   Lógica de la página de resultados
+   Pantalla de crítica directa: pieza + 6 dimensiones
    ======================================== */
 
 (function () {
   'use strict';
 
-  /* ---- Referencias DOM ---- */
-  const resultadoImg       = document.getElementById('resultadoImg');
-  const resultadoMeta      = document.getElementById('resultadoMeta');
-  const preguntaBox        = document.getElementById('preguntaBox');
-  const preguntaText       = document.getElementById('preguntaText');
-  const respuestaInput     = document.getElementById('respuestaInput');
-  const btnVerAnalisis     = document.getElementById('btnVerAnalisis');
-  const dimensionesSection = document.getElementById('dimensionesSection');
-  const dimensionesContainer = document.getElementById('dimensionesContainer');
-  const errorMsg           = document.getElementById('errorMsg');
+  const C = window.CRITIA;
+  const e = C.escapeHtml;
+  const app = document.getElementById('app');
+  const datos = C.getAnalisisActual();
 
-  /* ==================================================
-     1. LEER datos desde sessionStorage
-  ================================================== */
-
-  const base64    = sessionStorage.getItem('critia_imagen');
-  const mediaType = sessionStorage.getItem('critia_mediaType') || 'image/jpeg';
-  const tipo      = sessionStorage.getItem('critia_tipo');
-  const objetivo  = sessionStorage.getItem('critia_objetivo');
-  const resultado = JSON.parse(sessionStorage.getItem('critia_resultado') || 'null');
-
-  if (!base64 || !resultado) {
-    // No hay datos: redirigir al inicio después de mostrar mensaje
-    errorMsg.textContent = 'No encontramos datos de análisis. Redirigiendo al inicio…';
-    errorMsg.classList.add('visible');
-    setTimeout(() => { window.location.href = 'index.html'; }, 2500);
+  /* ---- Sin datos: mensaje y salida ---- */
+  if (!datos) {
+    app.innerHTML = `
+      <section class="vacio-total">
+        <h1 class="display">Todavía no hay<em>una crítica</em></h1>
+        <p class="lead">No encontramos un análisis en esta pestaña. Subí una pieza para empezar, o mirá un ejemplo.</p>
+        <div class="acciones" style="justify-content:center">
+          <a class="btn btn-dark" href="analizar.html">Analizar mi diseño</a>
+          <a class="btn" href="ejemplos.html">Ver ejemplos</a>
+        </div>
+      </section>`;
+    document.getElementById('exportarBtn').hidden = true;
     return;
   }
 
-  /* ==================================================
-     2. MOSTRAR imagen y metadatos
-  ================================================== */
+  const { ctx, version, demo, numero } = datos;
+  const resultado = C.normalizarResultado(version.resultado);
 
-  resultadoImg.src = `data:${mediaType};base64,${base64}`;
-  resultadoMeta.textContent = tipo ? `Tipo de proyecto: ${tipo}` : '';
-
-  /* ==================================================
-     3. PREGUNTA REFLEXIVA (modo aprendizaje)
-     Usamos la pregunta que devuelve la API (si existe)
-     o un fallback genérico.
-  ================================================== */
-
-  if (resultado.pregunta) {
-    preguntaText.textContent = resultado.pregunta;
+  if (demo) {
+    document.getElementById('demoPill').hidden = false;
+    document.getElementById('atrasLink').href = 'ejemplos.html';
+    document.title = 'CRITIA — Ejemplo: ' + version.nombre;
   }
 
-  /* Botón "Ver análisis" */
-  btnVerAnalisis.addEventListener('click', () => {
-    preguntaBox.style.opacity = '0.6';
-    preguntaBox.style.pointerEvents = 'none';
-    dimensionesSection.classList.add('visible');
+  const campo = (label, valor) => `
+    <div>
+      <dt>${label}</dt>
+      <dd class="${valor ? '' : 'vacio'}">${valor ? e(valor) : 'No especificado'}</dd>
+    </div>`;
 
-    // Scroll suave hacia las dimensiones
-    dimensionesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const botonPieza = demo
+    ? `<a class="arrow-btn" href="analizar.html">Analizar mi pieza ${C.FLECHA}</a>`
+    : `<a class="arrow-btn" href="analizar.html?v=${numero + 1}">Subir versión ${numero + 1} ${C.FLECHA}</a>`;
+
+  const dimsHtml = resultado.dimensiones.map((d, i) => `
+    <div class="dim${i === 0 ? ' open' : ''}">
+      <button type="button" class="dim-head" aria-expanded="${i === 0}" aria-controls="dim-${i}">
+        <h2>${e(d.nombre)}</h2>
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="dot ${d.estado}" role="img" aria-label="${C.ESTADOS[d.estado].label}" title="${C.ESTADOS[d.estado].label}"></span>
+      </button>
+      <div class="dim-body bloques" id="dim-${i}">${C.bloquesHtml(d)}</div>
+    </div>`).join('');
+
+  app.innerHTML = `
+    <div class="layout">
+      <aside class="pieza">
+        <p class="kicker">Pieza analizada${numero > 1 ? ' · versión ' + numero : ''}</p>
+        <div class="pieza-img"><img src="${version.imagen}" alt="${e(version.nombre || 'Pieza analizada')}"></div>
+        <dl class="ctx">
+          ${campo('Tipo', ctx.tipo)}
+          ${campo('Objetivo', ctx.objetivo)}
+          ${campo('Público', ctx.audiencia)}
+          ${campo('Concepto', ctx.mensaje)}
+        </dl>
+        <div class="pieza-spacer"></div>
+        <div class="pieza-footer no-print">${botonPieza}</div>
+      </aside>
+
+      <main class="critica">
+        <h1 class="display">Seis dimensiones,<em>una lectura honesta</em></h1>
+        ${C.LEYENDA}
+        <div class="dims">${dimsHtml}</div>
+
+        ${resultado.sintesis ? `
+        <section class="sintesis">
+          <p class="label-slash">/ Síntesis de CRITIA</p>
+          <blockquote>"${e(resultado.sintesis)}"</blockquote>
+        </section>` : ''}
+
+        <div class="acciones no-print">
+          ${demo ? '' : `<a class="btn" href="aprendizaje.html">Repasar en modo aprendizaje</a>`}
+          <a class="btn btn-dark" href="analizar.html">Analizar otra pieza</a>
+        </div>
+      </main>
+    </div>`;
+
+  /* ---- Acordeón ---- */
+  app.querySelectorAll('.dim-head').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dim = btn.closest('.dim');
+      const abierto = dim.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(abierto));
+    });
   });
 
-  /* ==================================================
-     4. RENDERIZAR dimensiones
-  ================================================== */
-
-  const ESTADO_ICONS = {
-    'bien':    { icon: '🟢', label: 'Funciona bien' },
-    'mejorar': { icon: '🟡', label: 'Podría mejorarse' },
-    'revisar': { icon: '🔴', label: 'Revisar' },
-  };
-
-  function renderDimensiones(dimensiones) {
-    dimensionesContainer.innerHTML = '';
-
-    dimensiones.forEach((dim, idx) => {
-      const estadoInfo = ESTADO_ICONS[dim.estado] || { icon: '⚪', label: dim.estado };
-
-      const card = document.createElement('div');
-      card.className = 'dimension-card';
-      card.innerHTML = `
-        <div class="dimension-header">
-          <span class="dimension-num">${String(idx + 1).padStart(2, '0')}</span>
-          <span class="dimension-nombre">${escapeHtml(dim.nombre)}</span>
-          <span class="estado-badge" title="${estadoInfo.label}">${estadoInfo.icon}</span>
-        </div>
-        <p class="dimension-analisis">${escapeHtml(dim.analisis)}</p>
-        ${dim.mejora ? `<p class="dimension-mejora">${escapeHtml(dim.mejora)}</p>` : ''}
-      `;
-      dimensionesContainer.appendChild(card);
-    });
-  }
-
-  if (resultado.dimensiones && resultado.dimensiones.length > 0) {
-    renderDimensiones(resultado.dimensiones);
-  } else {
-    dimensionesContainer.innerHTML = '<p style="color:var(--fg-muted); font-size:14px;">No se pudieron cargar las dimensiones del análisis.</p>';
-  }
-
-  /* ==================================================
-     5. UTILIDADES
-  ================================================== */
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
+  /* ---- Exportar: abre el diálogo de impresión (Guardar como PDF) ---- */
+  document.getElementById('exportarBtn').addEventListener('click', () => window.print());
 })();

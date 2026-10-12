@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Método</title>
+  <meta name="description" content="Cómo analiza CRITIA: seis dimensiones profesionales y cuatro preguntas por dimensión.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="critia.css">
+  <style>
+    .dims-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--gray-500);
+      margin: 44px 0 44px;
+    }
+
+    .dim-card {
+      display: flex;
+      align-items: center;
+      gap: clamp(16px, 3vw, 44px);
+      padding: 36px 28px;
+      border-right: 1px solid var(--gray-500);
+      border-bottom: 1px solid var(--gray-500);
+    }
+
+    .dim-card:nth-child(2n) { border-right: none; }
+    .dim-card:nth-last-child(-n+2) { border-bottom: none; }
+
+    .dim-num {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(54px, 5.5vw, 80px);
+      line-height: 1;
+      min-width: 1.6em;
+    }
+
+    .dim-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+    .dim-card p { margin-top: 6px; font-size: 15px; line-height: 1.45; }
+
+    .dim-card.destacada { background: var(--black); color: var(--white); }
+    .dim-card.destacada .dim-num { color: var(--orange); }
+
+    .preguntas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 56px var(--gutter);
+    }
+
+    .preguntas .display { font-size: clamp(40px, 4.4vw, 64px); margin-top: 20px; }
+    .preguntas .intro { margin-top: 24px; font-size: 16px; max-width: 460px; }
+
+    .q-list { list-style: none; }
+
+    .q-list li {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--gray-500);
+    }
+
+    .q-list h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; }
+    .q-list p { margin-top: 4px; font-size: 15px; }
+    .q-list .q-icon { margin-top: 4px; }
+
+    .principios { padding: 64px var(--gutter); }
+
+    .principios-grid {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      text-align: center;
+    }
+
+    .principios-grid blockquote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(26px, 2.4vw, 34px);
+      line-height: 1.1;
+    }
+
+    .principios-grid p { margin: 16px auto 0; max-width: 300px; font-size: 15px; }
+
+    .probalo {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding: 72px var(--gutter);
+    }
+
+    .probalo .label-slash { color: var(--white); }
+
+    .probalo h2 {
+      margin-top: 12px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(40px, 5vw, 72px);
+      letter-spacing: -.03em;
+      line-height: 1;
+    }
+
+    @media (max-width: 860px) {
+      .dims-grid { grid-template-columns: 1fr; }
+      .dim-card { border-right: none !important; border-bottom: 1px solid var(--gray-500) !important; padding: 24px 16px; }
+      .dim-card:last-child { border-bottom: none !important; }
+      .preguntas { grid-template-columns: 1fr; gap: 24px; }
+      .principios-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Principal">
+    <a href="index.html" class="logo" aria-label="CRITIA, inicio">CRITIA</a>
+    <ul>
+      <li><a href="metodo.html" aria-current="page">Método</a></li>
+      <li><a href="ejemplos.html">Ejemplos</a></li>
+      <li><a href="precios.html">Precios</a></li>
+      <li><a href="analizar.html" class="btn btn-sm btn-dark">Analizar</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="page">
+      <header class="page-hero">
+        <h1 class="display">Seis dimensiones,<em>un archivo</em></h1>
+        <p class="lead">CRITIA no opina. Recorre tu pieza con seis lentes profesionales y devuelve un análisis estructurado sobre cada una.</p>
+      </header>
+      <hr class="rule">
+
+      <section class="dims-grid" aria-label="Las seis dimensiones">
+        <article class="dim-card">
+          <span class="dim-num">01</span>
+          <div><h3>Jerarquía visual</h3><p>Qué se ve primero, qué después. Si el ojo tiene un camino claro o se dispersa.</p></div>
+        </article>
+        <article class="dim-card">
+          <span class="dim-num">02</span>
+          <div><h3>Composición</h3><p>Rejilla implícita, aire, tensiones y equilibrio de la puesta.</p></div>
+        </article>
+        <article class="dim-card">
+          <span class="dim-num">03</span>
+          <div><h3>Contraste</h3><p>Legibilidad, ratio, foco. Qué separa la figura del fondo, y qué no.</p></div>
+        </article>
+        <article class="dim-card">
+          <span class="dim-num">04</span>
+          <div><h3>Tipografía</h3><p>Elección, mezcla, tracking y peso. Si la voz tipográfica es intencional.</p></div>
+        </article>
+        <article class="dim-card">
+          <span class="dim-num">05</span>
+          <div><h3>Color</h3><p>Paleta, temperatura, sistema. Si el color construye significado.</p></div>
+        </article>
+        <article class="dim-card destacada">
+          <span class="dim-num">06</span>
+          <div><h3>Coherencia conceptual</h3><p>Si la forma comunica el concepto que dijiste querer comunicar.</p></div>
+        </article>
+      </section>
+    </div>
+
+    <section class="band-beige preguntas">
+      <div>
+        <p class="label-slash">/ Cada dimensión</p>
+        <h2 class="display">Cuatro preguntas,<em class="ink">una dirección</em></h2>
+        <p class="intro">Cada una de las 6 dimensiones se abre con la misma estructura. Sin adjetivos vacíos. Sin "buena idea". Solo qué pasa y qué hacer.</p>
+      </div>
+      <ul class="q-list">
+        <li><span class="q-icon funciona"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="6 11 12 5 18 11"/></svg></span><div><h3>Lo que funciona</h3><p>Reconocer antes de corregir.</p></div></li>
+        <li><span class="q-icon problema"><svg viewBox="0 0 24 24"><line x1="7" y1="7" x2="17" y2="17"/><line x1="17" y1="7" x2="7" y2="17"/></svg></span><div><h3>Lo que genera un problema</h3><p>El qué, señalado con precisión.</p></div></li>
+        <li><span class="q-icon porque"><svg viewBox="0 0 24 24"><path d="M9.2 9a3 3 0 1 1 4.3 2.7c-.9.4-1.5 1.2-1.5 2.2v.6"/><line x1="12" y1="18" x2="12" y2="18.2"/></svg></span><div><h3>Por qué es un problema</h3><p>El principio detrás, para entenderlo.</p></div></li>
+        <li><span class="q-icon mejora"><svg viewBox="0 0 24 24"><line x1="6" y1="12" x2="18" y2="12"/><polyline points="13 7 18 12 13 17"/></svg></span><div><h3>Dirección de mejora</h3><p>Un camino, no una receta.</p></div></li>
+      </ul>
+    </section>
+
+    <section class="principios">
+      <p class="label-slash">/ Principios</p>
+      <div class="principios-grid">
+        <div>
+          <blockquote>"Contexto antes que juicio."</blockquote>
+          <p>Sin objetivo, público y concepto, cualquier crítica es opinión disfrazada.</p>
+        </div>
+        <div>
+          <blockquote>"Descripción antes que gusto."</blockquote>
+          <p>Nombramos lo que vemos con vocabulario técnico. "No me gusta" no es análisis.</p>
+        </div>
+        <div>
+          <blockquote>"Dirección antes que respuesta."</blockquote>
+          <p>CRITIA marca hacia dónde ir. Las decisiones siguen siendo tuyas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band-black probalo">
+      <div>
+        <p class="label-slash">/ Probalo</p>
+        <h2>Subí tu primera pieza.</h2>
+      </div>
+      <a href="analizar.html" class="arrow-btn pill">Analizar con CRITIA <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>CRITIA · Crítica técnica de diseño</span>
+    <span>Diseño Multiplataforma · Universidad Champagnat</span>
+  </footer>
+</body>
+</html>

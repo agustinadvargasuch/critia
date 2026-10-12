@@ -66,11 +66,13 @@
     .nav-links a:hover { opacity: 0.6; }
 
     .nav-cta {
-      background: var(--gray-light);
-      color: var(--black);
+      display: inline-block;
+      text-decoration: none;
+      background: var(--black);
+      color: var(--white) !important;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      padding: 10px 22px;
+      border-radius: 30px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -236,10 +238,10 @@
   <nav>
     <a href="index.html" class="nav-logo">CRITIA<span>.</span></a>
     <ul class="nav-links">
-      <li><a href="#metodo">Método</a></li>
-      <li><a href="#ejemplos">Ejemplos</a></li>
-      <li><a href="#precios">Precios</a></li>
-      <li><button class="nav-cta" onclick="window.location='analizar.html'">Empezar</button></li>
+      <li><a href="metodo.html">Método</a></li>
+      <li><a href="ejemplos.html">Ejemplos</a></li>
+      <li><a href="precios.html">Precios</a></li>
+      <li><a class="nav-cta" href="analizar.html">Analizar</a></li>
     </ul>
   </nav>
 
@@ -251,7 +253,7 @@
     <p class="hero-subtitle">Tu primera crítica técnica, antes de la entrega</p>
     <div class="hero-btns">
       <a href="analizar.html" class="btn-fill">Analizar mi diseño</a>
-      <a href="#ejemplos" class="btn-outline">Ver ejemplo de crítica</a>
+      <a href="resultado.html?demo=muestra-fractura" class="btn-outline">Ver ejemplo de crítica</a>
     </div>
   </section>
 

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRITIA — Precios</title>
+  <meta name="description" content="Planes de CRITIA: Prueba, Estudio y Atelier.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="critia.css">
+  <style>
+    .periodo {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin: 40px 0 0;
+    }
+
+    .periodo button {
+      border: 1.5px solid var(--black);
+      background: transparent;
+      border-radius: 30px;
+      padding: 14px 34px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--black);
+    }
+
+    .periodo button[aria-pressed="true"] { background: var(--black); color: var(--white); }
+    .periodo button span { color: var(--orange); }
+
+    .planes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 56px 0 80px;
+    }
+
+    .plan {
+      border: 1px solid var(--black);
+      padding: 40px 40px 36px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .plan.dark { background: var(--black); color: var(--white); }
+
+    .plan .badge {
+      position: absolute;
+      top: 16px;
+      right: 22px;
+      background: var(--orange);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 20px;
+    }
+
+    .plan h2 { font-family: var(--font-display); font-weight: 600; font-size: 26px; }
+
+    .plan .para {
+      margin-top: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+
+    .plan.dark .para { color: var(--white); }
+
+    .precio {
+      margin-top: 44px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(64px, 6vw, 96px);
+      line-height: .9;
+      letter-spacing: -.02em;
+    }
+
+    .precio small { font-size: 15px; letter-spacing: 0; color: var(--gray-500); margin-bottom: 8px; }
+
+    .precio-nota { margin-top: 14px; font-size: 15px; color: var(--gray-500); min-height: 1.4em; }
+    .plan.dark .precio-nota { color: var(--white); }
+
+    .plan hr { border: none; border-top: 1px solid var(--gray-500); margin: 40px 0 28px; }
+
+    .features { list-style: none; display: grid; gap: 14px; font-size: 15px; font-weight: 500; }
+
+    .features li { display: flex; gap: 10px; align-items: baseline; }
+    .features li::before { content: '•'; }
+    .features li.destacado { color: var(--orange); }
+    .features li.no { color: var(--gray-500); font-weight: 400; }
+    .features li.no::before { content: '—'; }
+
+    .plan .btn { margin-top: auto; align-self: center; }
+    .plan .features { margin-bottom: 40px; }
+
+    .faq { padding: 64px var(--gutter) 72px; }
+
+    .faq-grid {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 80px;
+    }
+
+    .faq h3 { font-family: var(--font-display); font-weight: 600; font-size: 24px; }
+    .faq p { margin-top: 10px; font-size: 16px; }
+
+    @media (max-width: 960px) {
+      .planes { grid-template-columns: 1fr; max-width: 520px; margin-left: auto; margin-right: auto; }
+      .faq-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+
+    @media (max-width: 600px) {
+      .plan { padding: 32px 22px; }
+      .periodo { gap: 10px; }
+      .periodo button { padding: 11px 18px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Principal">
+    <a href="index.html" class="logo" aria-label="CRITIA, inicio">CRITIA</a>
+    <ul>
+      <li><a href="metodo.html">Método</a></li>
+      <li><a href="ejemplos.html">Ejemplos</a></li>
+      <li><a href="precios.html" aria-current="page">Precios</a></li>
+      <li><a href="analizar.html" class="btn btn-sm btn-dark">Analizar</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="page">
+      <header class="page-hero">
+        <h1 class="display">Simple,<em>como una buena crítica</em></h1>
+      </header>
+      <hr class="rule">
+
+      <div class="periodo" role="group" aria-label="Período de facturación">
+        <button type="button" data-p="mensual" aria-pressed="true">Mensual</button>
+        <button type="button" data-p="anual" aria-pressed="false">Anual <span>−20%</span></button>
+      </div>
+
+      <section class="planes">
+        <article class="plan">
+          <h2>Prueba</h2>
+          <p class="para">Para conocerla</p>
+          <div class="precio">$0</div>
+          <p class="precio-nota">/ para siempre</p>
+          <hr>
+          <ul class="features">
+            <li class="destacado">3 críticas por mes</li>
+            <li>Modo directo</li>
+            <li>6 dimensiones completas</li>
+            <li class="no">Comparación de versiones</li>
+            <li class="no">Modo aprendizaje</li>
+            <li class="no">Exportar PDF</li>
+          </ul>
+          <a href="analizar.html" class="btn">Empezar gratis</a>
+        </article>
+
+        <article class="plan dark">
+          <span class="badge">Recomendado</span>
+          <h2>Estudio</h2>
+          <p class="para">Para freelancers y estudiantes</p>
+          <div class="precio" data-mensual="9" data-anual="7"><span class="monto">$9</span><small>USD</small></div>
+          <p class="precio-nota" data-mensual="/ por mes" data-anual="/ por mes · facturado anual">/ por mes</p>
+          <hr>
+          <ul class="features">
+            <li class="destacado">50 críticas por mes</li>
+            <li>Modo directo y aprendizaje</li>
+            <li>Comparación V1 / V2 / V3</li>
+            <li>Exportar reportes en PDF</li>
+            <li>Historial y compartir por link</li>
+            <li>Prioridad en la cola</li>
+          </ul>
+          <button type="button" class="btn btn-on-dark plan-pago">Elegir Estudio</button>
+        </article>
+
+        <article class="plan">
+          <h2>Atelier</h2>
+          <p class="para">Para equipos pequeños</p>
+          <div class="precio" data-mensual="29" data-anual="23"><span class="monto">$29</span><small>USD</small></div>
+          <p class="precio-nota" data-mensual="/ por mes · hasta 5 usuarios" data-anual="/ por mes · hasta 5 usuarios · facturado anual">/ por mes · hasta 5 usuarios</p>
+          <hr>
+          <ul class="features">
+            <li class="destacado">Críticas ilimitadas</li>
+            <li>Todo lo del plan Estudio</li>
+            <li>Workspace compartido</li>
+            <li>Comentarios internos</li>
+            <li>Marca propia en los PDF</li>
+            <li>Soporte por email</li>
+          </ul>
+          <button type="button" class="btn plan-pago">Elegir Atelier</button>
+        </article>
+      </section>
+    </div>
+
+    <section class="band-beige faq">
+      <p class="label-slash">/ Preguntas frecuentes</p>
+      <div class="faq-grid">
+        <div>
+          <h3>¿Puedo cambiar de plan cuando quiera?</h3>
+          <p>Sí, en cualquier momento.</p>
+        </div>
+        <div>
+          <h3>¿Guardan mis piezas?</h3>
+          <p>Solo si activás el historial. En Prueba, nada se guarda: tu pieza queda en tu navegador y se borra al cerrar la pestaña.</p>
+        </div>
+        <div>
+          <h3>¿Hay descuento para estudiantes?</h3>
+          <p>Sí, el plan Estudio queda en $5 USD con mail institucional.</p>
+        </div>
+        <div>
+          <h3>¿Puedo cancelar?</h3>
+          <p>Cuando quieras.</p>
+        </div>
+        <div>
+          <h3>¿CRITIA reemplaza a un docente o a un cliente?</h3>
+          <p>No. Es una primera revisión técnica para llegar a la entrega con la pieza más pensada.</p>
+        </div>
+        <div>
+          <h3>¿Qué archivos puedo subir?</h3>
+          <p>PNG, JPG o WEBP de hasta 10 MB. Si tenés un PDF, exportá la página como imagen.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>CRITIA · Crítica técnica de diseño</span>
+    <span>Diseño Multiplataforma · Universidad Champagnat</span>
+  </footer>
+
+  <script src="critia-common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const botones = document.querySelectorAll('.periodo button');
+      botones.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const p = btn.dataset.p;
+          botones.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+          document.querySelectorAll('.precio[data-mensual]').forEach((el) => {
+            el.querySelector('.monto').textContent = '$' + el.dataset[p];
+          });
+          document.querySelectorAll('.precio-nota[data-mensual]').forEach((el) => {
+            el.textContent = el.dataset[p];
+          });
+        });
+      });
+
+      // Los planes pagos todavía no están activos
+      document.querySelectorAll('.plan-pago').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          window.CRITIA.toast('Los planes pagos estarán disponibles pronto. Mientras tanto, podés usar CRITIA gratis.');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
