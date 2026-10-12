@@ -294,9 +294,9 @@
 
     showLoading();
 
-    // Si la IA tarda más de 70 s, cortamos y avisamos
+    // Si no hay respuesta en 2 minutos y medio, cortamos y avisamos
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 70000);
+    const timer = setTimeout(() => controller.abort(), 150000);
 
     try {
       const response = await fetch('/api/analizar', {
