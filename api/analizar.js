@@ -86,6 +86,10 @@ Respondé SOLO con JSON válido, con esta forma exacta:
     // Llamar a la API de Google Gemini.
     // "thinkingLevel: low" hace que el modelo piense menos y responda más rápido.
     // Si el modelo no acepta esa opción, se reintenta sin ella.
+    const inicio = Date.now();
+    const restante = () => LIMITE_MS - (Date.now() - inicio);
+    const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+
     const llamarGemini = (rapido) => {
       const generationConfig = {
         responseMimeType: 'application/json',
@@ -96,7 +100,7 @@ Respondé SOLO con JSON válido, con esta forma exacta:
 
       // Cortamos antes del límite de Vercel para poder devolver un mensaje claro
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), LIMITE_MS);
+      const timer = setTimeout(() => controller.abort(), Math.max(restante(), 1000));
 
       return fetch(url, {
         method: 'POST',
@@ -116,22 +120,45 @@ Respondé SOLO con JSON válido, con esta forma exacta:
       }).finally(() => clearTimeout(timer));
     };
 
-    const inicio = Date.now();
-    let geminiResponse = await llamarGemini(true);
+    // Pedido con reintentos: si Google está saturado (503/429/500),
+    // esperamos unos segundos y volvemos a probar, hasta 3 intentos.
+    let rapido = true;
+    let geminiResponse;
+    for (let intento = 1; intento <= 3; intento++) {
+      geminiResponse = await llamarGemini(rapido);
 
-    if (geminiResponse.status === 400) {
-      const errTxt = await geminiResponse.clone().text().catch(() => '');
-      if (/thinking/i.test(errTxt)) {
-        console.warn('[CRITIA] El modelo no acepta thinkingLevel, reintento sin esa opción');
-        geminiResponse = await llamarGemini(false);
+      // El modelo no acepta "thinkingLevel": reintentar sin esa opción
+      if (geminiResponse.status === 400 && rapido) {
+        const errTxt = await geminiResponse.clone().text().catch(() => '');
+        if (/thinking/i.test(errTxt)) {
+          console.warn('[CRITIA] El modelo no acepta thinkingLevel, reintento sin esa opción');
+          rapido = false;
+          geminiResponse = await llamarGemini(false);
+        }
       }
+
+      const saturado = [429, 500, 503].includes(geminiResponse.status);
+      if (!saturado) break;
+
+      const pausa = intento === 1 ? 3000 : 7000;
+      if (intento === 3 || restante() < pausa + 20000) break; // no queda tiempo para otro intento
+      console.warn('[CRITIA] Gemini saturado (' + geminiResponse.status + '), intento', intento, '- reintento en', pausa, 'ms');
+      await esperar(pausa);
     }
-    console.log('[CRITIA] Gemini respondió en', Date.now() - inicio, 'ms');
+    console.log('[CRITIA] Gemini respondió en', Date.now() - inicio, 'ms con estado', geminiResponse.status);
 
     if (!geminiResponse.ok) {
       const errData = await geminiResponse.json().catch(() => ({}));
       console.error('[CRITIA] Error Gemini API:', errData);
-      const errMsg = errData?.error?.message || `Error del servidor: ${geminiResponse.status}`;
+      const status = geminiResponse.status;
+      let errMsg;
+      if (status === 503 || status === 500) {
+        errMsg = 'La IA de Google está con mucha demanda en este momento. Esperá unos minutos y probá de nuevo.';
+      } else if (status === 429) {
+        errMsg = 'Se alcanzó el límite de análisis por minuto de la IA. Esperá un minuto y probá de nuevo.';
+      } else {
+        errMsg = errData?.error?.message || `Error del servidor: ${status}`;
+      }
       return res.status(502).json({ error: errMsg });
     }
 
