@@ -28,13 +28,15 @@ export default async function handler(req, res) {
   }
 
   // Modelo de Gemini
-  const MODEL = 'gemini-3.8-flash';
+  // Modelos a usar, en orden. Si el primero está saturado, se prueba el siguiente.
+  // Los que no existan para tu clave se saltean solos.
+  // Opcional: en Vercel podés definir GEMINI_MODELOS = "modelo1,modelo2" para cambiarlos sin tocar código.
+  const MODELOS = (process.env.GEMINI_MODELOS || 'gemini-3.8-flash,gemini-3.8-flash-lite,gemini-2.5-flash')
+    .split(',').map((m) => m.trim()).filter(Boolean);
 
   // Tiempo máximo que esperamos a Gemini (un poco menos que maxDuration de vercel.json)
   const LIMITE_MS = 110000;
 
-  // URL del endpoint de Gemini
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
 
   // Construir el prompt para Gemini
   const prompt = `Sos un crítico de diseño gráfico profesional con experiencia docente.
@@ -90,7 +92,8 @@ Respondé SOLO con JSON válido, con esta forma exacta:
     const restante = () => LIMITE_MS - (Date.now() - inicio);
     const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
-    const llamarGemini = (rapido) => {
+    const llamarGemini = (modelo, rapido) => {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${apiKey}`;
       const generationConfig = {
         responseMimeType: 'application/json',
         temperature: 0.4,
@@ -120,32 +123,53 @@ Respondé SOLO con JSON válido, con esta forma exacta:
       }).finally(() => clearTimeout(timer));
     };
 
-    // Pedido con reintentos: si Google está saturado (503/429/500),
-    // esperamos unos segundos y volvemos a probar, hasta 3 intentos.
-    let rapido = true;
-    let geminiResponse;
-    for (let intento = 1; intento <= 3; intento++) {
-      geminiResponse = await llamarGemini(rapido);
+    // Pedido con reintentos y modelos de respaldo:
+    // - Si Google está saturado (503/500/429), se reintenta una vez y después se pasa al siguiente modelo.
+    // - Si un modelo no existe para esta clave (404), se saltea.
+    let geminiResponse = null;
+    let ultimaSaturada = null;
+    let modeloUsado = null;
 
-      // El modelo no acepta "thinkingLevel": reintentar sin esa opción
-      if (geminiResponse.status === 400 && rapido) {
-        const errTxt = await geminiResponse.clone().text().catch(() => '');
-        if (/thinking/i.test(errTxt)) {
-          console.warn('[CRITIA] El modelo no acepta thinkingLevel, reintento sin esa opción');
-          rapido = false;
-          geminiResponse = await llamarGemini(false);
+    buscar:
+    for (const modelo of MODELOS) {
+      let rapido = true;
+      for (let intento = 1; intento <= 2; intento++) {
+        if (restante() < 20000) break buscar; // no queda tiempo
+
+        let r = await llamarGemini(modelo, rapido);
+
+        // El modelo no acepta "thinkingLevel": reintentar sin esa opción
+        if (r.status === 400 && rapido) {
+          const errTxt = await r.clone().text().catch(() => '');
+          if (/thinking/i.test(errTxt)) {
+            rapido = false;
+            r = await llamarGemini(modelo, false);
+          }
         }
+
+        if (r.status === 404) {
+          console.warn('[CRITIA] El modelo', modelo, 'no está disponible, paso al siguiente');
+          break; // siguiente modelo
+        }
+
+        if ([429, 500, 503].includes(r.status)) {
+          ultimaSaturada = r;
+          console.warn('[CRITIA]', modelo, 'saturado (' + r.status + '), intento', intento);
+          if (intento === 1) await esperar(2500);
+          continue;
+        }
+
+        geminiResponse = r; // respuesta válida o error distinto de saturación
+        modeloUsado = modelo;
+        break buscar;
       }
-
-      const saturado = [429, 500, 503].includes(geminiResponse.status);
-      if (!saturado) break;
-
-      const pausa = intento === 1 ? 3000 : 7000;
-      if (intento === 3 || restante() < pausa + 20000) break; // no queda tiempo para otro intento
-      console.warn('[CRITIA] Gemini saturado (' + geminiResponse.status + '), intento', intento, '- reintento en', pausa, 'ms');
-      await esperar(pausa);
     }
-    console.log('[CRITIA] Gemini respondió en', Date.now() - inicio, 'ms con estado', geminiResponse.status);
+
+    if (!geminiResponse) geminiResponse = ultimaSaturada;
+    if (!geminiResponse) {
+      return res.status(502).json({ error: 'No hay un modelo de IA disponible para esta clave. Revisá GEMINI_MODELOS en Vercel.' });
+    }
+    console.log('[CRITIA] Respuesta de', modeloUsado || 'ninguno', 'en', Date.now() - inicio, 'ms con estado', geminiResponse.status);
 
     if (!geminiResponse.ok) {
       const errData = await geminiResponse.json().catch(() => ({}));
@@ -164,7 +188,8 @@ Respondé SOLO con JSON válido, con esta forma exacta:
 
     const geminiData = await geminiResponse.json();
 
-    const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const partes = geminiData?.candidates?.[0]?.content?.parts || [];
+    const rawText = partes.filter((p) => p.text && !p.thought).map((p) => p.text).join('');
 
     if (!rawText) {
       console.error('[CRITIA] Respuesta vacía de Gemini:', JSON.stringify(geminiData));
