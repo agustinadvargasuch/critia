@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRITIA — Tu primera crítica técnica, antes de la entrega</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,6 +15,8 @@
       --white: #ffffff;
       --orange: #f04e14;
       --gray-mid: #888;
+      --gray-text: #4a4a4a;
+      --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
       --gray-light: #e8e8e8;
       --gray-bg: #f5f5f5;
     }
@@ -34,19 +37,25 @@
       border-bottom: 1px solid var(--gray-light);
     }
 
+    /* Mismo logo que en el resto de las pantallas */
     .nav-logo {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 26px;
+      letter-spacing: -1px;
       color: var(--black);
       text-decoration: none;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 3px;
     }
 
-    .nav-logo span {
-      color: var(--orange);
-      font-size: 26px;
-      line-height: 1;
-      vertical-align: -3px;
+    .nav-logo::after {
+      content: '';
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--orange);
     }
 
     .nav-links {
@@ -65,18 +74,19 @@
 
     .nav-links a:hover { opacity: 0.6; }
 
-    .nav-cta {
+    /* Versión del programa */
+    .version {
       display: inline-block;
-      text-decoration: none;
       background: var(--black);
-      color: var(--white) !important;
-      border: none;
-      padding: 10px 22px;
+      color: var(--white);
+      padding: 9px 20px;
       border-radius: 30px;
+      font-family: var(--font-display);
       font-size: 13px;
       font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: default;
     }
 
     /* ---- HERO ---- */
@@ -90,13 +100,14 @@
     }
 
     .hero-logo {
+      font-family: var(--font-display);
       font-size: clamp(80px, 14vw, 160px);
       font-weight: 900;
       letter-spacing: -4px;
       line-height: 0.9;
       color: var(--black);
       display: flex;
-      align-items: flex-start;
+      align-items: baseline; /* el punto se apoya en la línea base de las letras */
     }
 
     .hero-logo .dot {
@@ -104,8 +115,7 @@
       height: clamp(18px, 3vw, 36px);
       background: var(--orange);
       border-radius: 50%;
-      margin-top: clamp(14px, 2.5vw, 28px);
-      margin-left: 4px;
+      margin-left: clamp(4px, .6vw, 8px);
       flex-shrink: 0;
     }
 
@@ -216,10 +226,10 @@
     }
 
     .feature-desc {
-      font-size: 14px;
-      color: var(--gray-mid);
+      font-size: 15px;
+      color: var(--gray-text);
       line-height: 1.6;
-      max-width: 220px;
+      max-width: 240px;
     }
 
     /* ---- RESPONSIVE ---- */
@@ -236,12 +246,12 @@
 
   <!-- Navegación -->
   <nav>
-    <a href="index.html" class="nav-logo">CRITIA<span>.</span></a>
+    <a href="index.html" class="nav-logo" aria-label="CRITIA, inicio">CRITIA</a>
     <ul class="nav-links">
       <li><a href="metodo.html">Método</a></li>
       <li><a href="ejemplos.html">Ejemplos</a></li>
       <li><a href="precios.html">Precios</a></li>
-      <li><a class="nav-cta" href="analizar.html">Analizar</a></li>
+      <li><span class="version" title="Versión del programa">v1.3 beta</span></li>
     </ul>
   </nav>
 
@@ -268,7 +278,7 @@
         </svg>
       </div>
       <div class="feature-title">Subí tu pieza</div>
-      <p class="feature-desc">PNG, JPG o PDF. Un logo, un afiche, una pantalla, lo que quieras revisar.</p>
+      <p class="feature-desc">PNG, JPG o WEBP. Un logo, un afiche, una pantalla, lo que quieras revisar.</p>
     </div>
 
     <div class="feature">
